@@ -8,8 +8,20 @@ const remainingGuessesSpan=document.querySelector(".remaining span");
 const message= document.querySelector(".message");
 const playAgainButton= document.querySelector(".play-again");
 
-const word= "magnolia";
+let word= "magnolia";
 const guessedLetters= [];
+let remainingGuesses= 8;
+
+const getWord = async function () {
+    const response = await fetch("https://gist.githubusercontent.com/skillcrush-curriculum/7061f1d4d3d5bfe47efbfbcfe42bf57e/raw/5ffc447694486e7dea686f34a6c085ae371b43fe/words.txt");
+    const words = await response.text();
+    const wordArray = words.split("\n");
+    //console.log(wordArray);
+    const randomIndex = Math.floor(Math.random() * wordArray.length);
+    word=wordArray[randomIndex].trim();
+    placeholder(word);
+};
+getWord();
 
 // Display our symbols as placeholders for the chosen word's letters
 
@@ -21,8 +33,6 @@ const placeholder= function (word){
     }
     wordInProgress.innerText= placeholderLetters.join("");
 };
-
-placeholder(word);
 
 // Add event listener for the button 
 
@@ -98,3 +108,14 @@ const updateWordInProgress = function (guessedLetters) {
     }
   };
 
+/* Creating a function to count guesses remaining */
+
+const updateGuessesRemaining=function(guess) {
+    const upperWord=word.toUpperCase();
+    if (!upperWord.includes(guess)) {
+        message.innerText=`Sorry, the word has no ${guess}`;
+        remainingGuesses -=1;
+    } else {
+        message.innerText=`There you go! The word has ${guess}`;
+    }
+};
